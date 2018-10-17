@@ -1,5 +1,5 @@
 import ConfigParser
-import io, os, sys
+import io, json, os, requests, sys
 
 class Slack:
     _config_path = "slack/config.ini"
@@ -23,3 +23,9 @@ class Slack:
                 self.config[section][option] = config.get(section, option)
 
         print(self.config)
+    
+    def send_test(self):
+        msg = {}
+        msg['text'] = "Test message"
+
+        r = requests.post(self.config['api']['webhook_url'], data=json.dumps(msg))
