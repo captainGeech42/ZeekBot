@@ -6,15 +6,27 @@ import sys
 
 
 def main(argv):
-    Config.path = "config.json"
-
+    # Initialize log
     log = Log("main")
-    log.info("Starting bot")
 
-    s = Slack()
-    s.send_test()
+    # Write log messages to stdout if debugging
+    if "debug" in argv:
+        Log.stdout = True
 
-    log.info("Exiting")
+    try:
+        # Set static class var for config path
+        Config.path = "config.json"
+
+        log.info("Starting bot")
+
+        s = Slack()
+        s.send_test()
+
+        log.info("Exiting")
+    except Exception as e:
+        log.error("unhandled exception, exiting: {e}".format(e=str(e)))
+        return 1
+    return 0
 
 
 if __name__ == "__main__":
