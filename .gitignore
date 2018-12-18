@@ -2,7 +2,7 @@
 .vscode/**
 
 # Config files
-**/config.json
+config.json
 
 # Log files
 **/*.log
