@@ -1,14 +1,13 @@
-from config import Config
-
 from datetime import datetime
 import os
 import threading
 
 
 class Log:
+    stdout = False
+
     def __init__(self, type: str) -> None:
         self.type = type
-        self.config = Config("config.json")
 
 
     def info(self, msg: str) -> None:
@@ -35,8 +34,13 @@ class Log:
 
 
     def _build_msg(self, status: str, msg: str) -> str:
-        """Return the string with proper parameters to be written to the log"""
-        return "{ts} {type} [{status}] {msg}".format(ts=self._get_ts(), type=self.type, status=status, msg=msg)
+        """Return the string with proper parameters to be written to the log. Also writes to stdout if specified"""
+        line = "{ts} {type} [{status}] {msg}".format(ts=self._get_ts(), type=self.type, status=status, msg=msg)
+
+        if Log.stdout:
+            print(line)
+
+        return line
 
 
 # There can be multiple instances of the Log class
