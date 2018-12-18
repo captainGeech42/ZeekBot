@@ -1,6 +1,7 @@
 from log import Log
 
 import json
+from typing import Dict
 
 
 # https://python-3-patterns-idioms-test.readthedocs.io/en/latest/Singleton.html
@@ -28,11 +29,21 @@ class Config:
                 self.log.info("read in config")
             except Exception as e:
                 self.log.error("error reading in config: {e}".format(e=str(e)))
+        
+        
+        def get_config(self, section: str) -> Dict[str, str]:
+            """Return the dictionary of config items for a given section (i.e. "slack", "zeek", etc.)"""
+            try:
+                return self.config[section]
+            except Exception as e:
+                self.log.error("error retrieving config for \"{section}\": {e}".format(section=section, e=str(e)))
+                return None
 
-
+    # Static class variables
     _instance = None
     path = None
 
+    # Singleton handler
     def __new__(cls):
         if not Config._instance:
             Config._instance = Config.__Config(Config.path)
@@ -40,9 +51,4 @@ class Config:
 
 
     def get_config(self, section: str) -> """Dict[str, str] or Dict[str, Dict[str, str]]""":
-        """Return the dictionary of config items for a given section (i.e. "slack", "zeek", etc.)"""
-        try:
-            return self._instance.config[section]
-        except Exception as e:
-            self._instance.log.error("error retrieving config for \"{section}\": {e}".format(section=section, e=str(e)))
-            return None
+        return Config._instance.get_config(section)
